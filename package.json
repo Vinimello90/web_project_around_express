@@ -1,0 +1,36 @@
+{
+  "name": "web_project_around_express",
+  "version": "1.0.0",
+  "description": "Around the US API, manage user profile (name, photo) and interact with photo cards containing location names, images, and like status.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "npx eslint .",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vinimello90/web_project_around_express.git"
+  },
+  "keywords": [
+    "API",
+    "around",
+    "the",
+    "US"
+  ],
+  "author": "Vinicius Barretto Mello",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vinimello90/web_project_around_express/issues"
+  },
+  "homepage": "https://github.com/Vinimello90/web_project_around_express#readme",
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
