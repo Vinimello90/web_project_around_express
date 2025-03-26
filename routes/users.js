@@ -9,7 +9,7 @@ router.get('/users', async (req, res) => {
     const data = await fsPromises.readFile(USERS_PATH, { encoding: 'utf8' });
     res.send(JSON.parse(data));
   } catch (err) {
-    res.status(500).send({ message: 'Ocorreu um erro ao buscar os dados' });
+    res.status(500).send({ message: 'Ocorreu um erro no servidor' });
   }
 });
 
@@ -25,7 +25,7 @@ router.get('/users/:id', async (req, res) => {
     }
     res.send(userData);
   } catch (err) {
-    res.status(500).send({ message: 'Ocorreu um erro ao buscar os dados' });
+    res.status(500).send({ message: 'Ocorreu um erro no servidor' });
     console.error(err);
   }
 });

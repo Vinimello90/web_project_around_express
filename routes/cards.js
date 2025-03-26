@@ -9,7 +9,7 @@ router.get('/cards', async (req, res) => {
     const data = await fsPromises.readFile(CARDS_PATH, { encoding: 'utf8' });
     res.send(JSON.parse(data));
   } catch (err) {
-    res.status(500).send({ message: 'Ocorreu um erro ao buscar os dados' });
+    res.status(500).send({ message: 'Ocorreu um erro no servidor' });
   }
 });
 
