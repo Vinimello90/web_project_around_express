@@ -4,16 +4,22 @@ const path = require('path');
 
 const USERS_PATH = path.join(__dirname, '../data/users.json');
 
-router.get('/users', async (req, res) => {
+// Se eu importar com require o json, não vou precisar usar tbm o fs para ler o arquivo correto??
+// usei o path e o fs porque foi um dos requerimentos do roteiro...
+// levando isso em conta, eu mudo a importação ou mantém como fiz???
+
+router.get('/', async (req, res) => {
   try {
-    const data = await fsPromises.readFile(USERS_PATH, { encoding: 'utf8' });
-    res.send(JSON.parse(data));
+    const data = JSON.parse(
+      await fsPromises.readFile(USERS_PATH, { encoding: 'utf8' }),
+    );
+    res.send(data);
   } catch (err) {
     res.status(500).send({ message: 'Ocorreu um erro no servidor' });
   }
 });
 
-router.get('/users/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const data = JSON.parse(
       await fsPromises.readFile(USERS_PATH, { encoding: 'utf8' }),

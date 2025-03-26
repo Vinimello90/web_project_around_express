@@ -4,10 +4,12 @@ const path = require('path');
 
 const CARDS_PATH = path.join(__dirname, '../data/cards.json');
 
-router.get('/cards', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const data = await fsPromises.readFile(CARDS_PATH, { encoding: 'utf8' });
-    res.send(JSON.parse(data));
+    const data = JSON.parse(
+      await fsPromises.readFile(CARDS_PATH, { encoding: 'utf8' }),
+    );
+    res.send(data);
   } catch (err) {
     res.status(500).send({ message: 'Ocorreu um erro no servidor' });
   }
