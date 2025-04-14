@@ -1,29 +1,39 @@
-# Around the U.S. - EUA Afora API (Express)
+# Around the U.S. - EUA Afora API RESTful
 
-Este é um projeto de API desenvolvido utilizando `Node.js` e o framework `Express.js`. A API fornece dados de usuários e cartões para serem consumidos na plataforma do projeto **[Around the U.S. - EUA Afora](https://github.com/Vinimello90/web_project_around_react#readme)**.
+Este é um projeto de API RESTful desenvolvido utilizando **Node.js**, framework **Express.js**, **MongoDB** e **mongoose**. A API recebe dados para salvar e persistir em um banco de dados e fornece os dados de usuários e cartões para serem consumidos na plataforma do projeto **[Around the U.S. - EUA Afora](https://github.com/Vinimello90/web_project_around_react#readme)**.
 
 ## Tecnologias
 
 - Node.js
 - Express.js
+- MongoDB
+- Mongoose
 
 ## Descrição das Tecnologias e Técnicas Utilizadas
 
 ### Node.js e Express
 
-`Node.js` é um ambiente de execução para JavaScript, que permite executar códigos JavaScript fora do navegador. Ele possibilita o desenvolvimento de aplicações no back-end, além do front-end. A framework `Express.js` foi utilizada para criar o servidor e as rotas da API.
+**Node.js** é um ambiente de execução para JavaScript, que permite executar códigos JavaScript fora do navegador. Ele possibilita o desenvolvimento de aplicações no back-end, além do front-end. A framework **Express.js** foi utilizada para criar o servidor e as rotas da API.
 
-A propriedade `process.env` foi usada para armazenar o valor da porta na variável `PORT`, que pode ser configurada durante a execução. Caso não seja fornecido um valor, a porta padrão será `3000`, e será usada no método `listen()` para inicializar o servidor e estabelecer a porta de escuta.
+A propriedade **process.env** foi usada para armazenar o valor da porta na variável **PORT**, que pode ser configurada durante a execução. Caso não seja fornecido um valor, a porta padrão será **3000**, e será usada no método `listen()` para inicializar o servidor e estabelecer a porta de escuta.
 
-As rotas para requisitar dados dos usuários e dos cartões foram criadas utilizando o método `get()` do Express.js. Essas rotas foram separadas em módulos, e utilizado o método `Router()` para criar um roteador para as rotas. O `require()` do Node.js foi usado para carregar esses módulos, e o método `use()` foi aplicado para incluir as rotas no módulo principal da API.
+As rotas para requisitar dados dos usuários e dos cartões foram criadas utilizando os métodos `get()`, `post()`, `put()` e `delete()` do **Express.js**. Essas rotas foram separadas em módulos, e utilizado o método `Router()` para criar um roteador para as rotas. O `require()` do Node.js foi usado para carregar esses módulos, e o método `use()` foi aplicado para incluir as rotas no módulo principal da API.
 
-Para ler os arquivos, foi utilizado o módulo `fs` com o método `readFile()`, indicando o caminho para o arquivo e o formato de codificação (encoding). Para tornar o caminho dos arquivos dinâmico e evitar problemas de compatibilidade entre sistemas operacionais, foi utilizado o módulo `path` com o método `join()`.
+Foi utilizado um middleware global para tratar os erros das rotas utilizando o método `app.use()` no App.js para executar o middleware ao ser chamado o método `next()` nas rotas.
 
-A propriedade `promises` foi utilizada para ler os arquivos de forma assíncrona. O bloco `try/catch` foi empregado para lidar com erros e evitar o uso de callbacks no `readFile()`, tornando o código mais limpo e fácil de entender e manter.
+## MongoDB
+
+É um banco de dados NoSQL orientado a documentos. Ao invés de armazenar os dados em tabelas como os bancos relacionais (tipo MySQL ou PostgreSQL), ele armazena os dados em documentos no formato JSON.
+
+## Mongoose
+
+É uma biblioteca para Node.js que facilita a interação com o MongoDB, foi definido os **Schemas** e criado os **models** para válidar e criar os dados dos cards e dos usuários.
+
+Foi utilizado os métodos `find()`, `findById()`, `findByIdAndUpdate()` e `findByIdAndRemove()` para fazer o **CRUD(Create, Read, Update, Delete)** e manipular o banco de dados.
 
 # Documentação
 
-Após instalar todas as ferramentas e dependencias com a linha de comando `npm i`, utilize a linha de comando `npm run start` para iniciar o servidor.
+Após instalar todas as ferramentas e dependencias com a linha de comando **npm i**, utilize a linha de comando **npm run start** para iniciar o servidor.
 
 ## Endpoints
 
@@ -39,7 +49,7 @@ http://localhost:3000/users
 
 ### GET /users/:id
 
-Essa rota com método GET retorna através do `ID` os dados do usuário em formato JSON.
+Essa rota com método GET retorna através do **ID** os dados do usuário em formato JSON.
 
 Exemplo:
 
@@ -47,7 +57,7 @@ Exemplo:
 http://localhost:3000/cards/12345
 ```
 
-Substitua `12345` pelo `ID` do usuário desejado.
+Substitua **12345** pelo **ID** do usuário desejado.
 
 ### POST /users
 
@@ -167,7 +177,7 @@ http://localhost:3000/cards
 
 ### DELETE /cards/:cardId
 
-Essa rota requisita através do `ID` do card passado no parâmetro da rota a remoção do card.
+Essa rota requisita através do **ID** do card passado no parâmetro da rota a remoção do card.
 
 **Exemplo**
 
@@ -177,11 +187,11 @@ Endereço (URL)
 http://localhost:3000/cards/12345
 ```
 
-Substitua `12345` pelo `ID` do card desejado.
+Substitua **12345** pelo **ID** do card desejado.
 
 ### PUT /cards/:cardId/likes
 
-Essa rota requisita através do `ID` do card a alteração da propriedade likes do card, adicionando a `ID` do usuário atual ao array de likes.
+Essa rota requisita através do **ID** do card a alteração da propriedade likes do card, adicionando a **ID** do usuário atual ao array de likes.
 
 **Exemplo**
 
@@ -191,11 +201,11 @@ Endereço (URL)
 http://localhost:3000/cards/12345/likes
 ```
 
-Substitua `12345` pelo `ID` do card desejado.
+Substitua **12345** pelo **ID** do card desejado.
 
 ### DELETE /cards/:cardId/likes
 
-Essa rota requisita através do `ID` do card a alteração da propriedade likes do card, removendo a `ID` do usuário atual do array de likes.
+Essa rota requisita através do **ID** do card a alteração da propriedade likes do card, removendo a **ID** do usuário atual do array de likes.
 
 **Exemplo**
 
@@ -205,4 +215,4 @@ Endereço (URL)
 http://localhost:3000/cards/12345/likes
 ```
 
-Substitua `12345` pelo `ID` do card desejado.
+Substitua **12345** pelo **ID** do card desejado.
