@@ -47,7 +47,7 @@ Exemplo:
 http://localhost:3000/users
 ```
 
-### GET /users/:id
+### GET /users/:userId
 
 Retorna os dados de um usuário específico com base no **ID**, em formato JSON.
 
