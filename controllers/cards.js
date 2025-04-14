@@ -1,29 +1,72 @@
 const Card = require('../models/card');
 
-module.exports.getCards = (req, res) => {
-  Card.find()
-    .then((cards) => res.send(cards))
-    .catch((err) => {
-      res.status(500).send({ message: err });
+module.exports.getCards = async (req, res, next) => {
+  try {
+    const cards = await Card.find().orFail(() => {
+      const error = new Error('No cards found.');
+      error.statusCode = 404;
+      throw error;
     });
+    res.send(cards);
+  } catch (err) {
+    next(err);
+  }
 };
 
-module.exports.createCard = (req, res) => {
-  const { name, link } = req.body;
-  const { _id } = req.user;
-  Card.create({ name, link, owner: _id })
-    .then((card) => res.send(card))
-    .catch((err) => {
-      res.status(500).send({ message: err });
-    });
+module.exports.createCard = async (req, res, next) => {
+  try {
+    const { name, link } = req.body;
+    const { _id: userId } = req.user;
+    const newCard = await Card.create({ name, link, owner: userId });
+    res.send(newCard);
+  } catch (err) {
+    next(err);
+  }
 };
 
-module.exports.removeCard = (req, res) => {
-  const { id } = req.params;
-  console.log(id);
-  Card.findByIdAndDelete(id)
-    .then(() => res.send({ message: 'Card successfully deleted' }))
-    .catch((err) => {
-      res.status(500).send({ message: err });
+module.exports.removeCard = async (req, res, next) => {
+  try {
+    const { cardId } = req.params;
+    await Card.findByIdAndDelete(cardId).orFail(() => {
+      const error = new Error('No card found with the provided ID.');
+      error.statusCode = 404;
+      throw error;
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.likeCard = async (req, res, next) => {
+  try {
+    const updatedCard = await Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $addToSet: { likes: req.user._id } },
+      { new: true },
+    ).orFail(() => {
+      const error = new Error('No card found with the provided ID.');
+      error.statusCode = 404;
+      throw error;
+    });
+    res.send(updatedCard);
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.dislikeCard = async (req, res, next) => {
+  try {
+    const updatedCard = await Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $pull: { likes: req.user._id } },
+      { new: true },
+    ).orFail(() => {
+      const error = new Error('No card found with the provided ID.');
+      error.statusCode = 404;
+      throw error;
+    });
+    res.send(updatedCard);
+  } catch (err) {
+    next(err);
+  }
 };
