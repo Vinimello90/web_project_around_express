@@ -14,7 +14,7 @@ module.exports = (err, req, res, next) => {
   }
 
   res.status(statusCode).send({
-    error:
+    message:
       statusCode !== INTERNAL_SERVER_ERROR ? message : 'Internal Server Error.',
   });
 };
