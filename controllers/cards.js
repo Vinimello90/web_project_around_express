@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const NotFoundError = require('../utils/NotFoundError');
 
 module.exports.getCards = async (req, res, next) => {
   try {
@@ -28,9 +29,7 @@ module.exports.removeCard = async (req, res, next) => {
   try {
     const { cardId } = req.params;
     await Card.findByIdAndDelete(cardId).orFail(() => {
-      const error = new Error('No card found with the provided ID.');
-      error.statusCode = 404;
-      throw error;
+      throw new NotFoundError('No card found with the provided ID.');
     });
   } catch (err) {
     next(err);
@@ -44,9 +43,7 @@ module.exports.likeCard = async (req, res, next) => {
       { $addToSet: { likes: req.user._id } },
       { new: true },
     ).orFail(() => {
-      const error = new Error('No card found with the provided ID.');
-      error.statusCode = 404;
-      throw error;
+      throw new NotFoundError('No card found with the provided ID.');
     });
     res.send(updatedCard);
   } catch (err) {
@@ -61,9 +58,7 @@ module.exports.dislikeCard = async (req, res, next) => {
       { $pull: { likes: req.user._id } },
       { new: true },
     ).orFail(() => {
-      const error = new Error('No card found with the provided ID.');
-      error.statusCode = 404;
-      throw error;
+      throw new NotFoundError('No card found with the provided ID.');
     });
     res.send(updatedCard);
   } catch (err) {

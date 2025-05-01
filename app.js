@@ -4,7 +4,9 @@ const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const errorHandler = require('./middlewares/errorHandler');
 
-mongoose.connect('mongodb://localhost:27017/aroundb').catch(() => console.error('Failed to connect to MongoDB'));
+mongoose
+  .connect('mongodb://localhost:27017/aroundb')
+  .catch(() => console.error('Failed to connect to MongoDB'));
 
 const db = mongoose.connection;
 

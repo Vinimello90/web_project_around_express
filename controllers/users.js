@@ -1,11 +1,10 @@
 const User = require('../models/user');
+const NotFoundError = require('../utils/NotFoundError');
 
 module.exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find().orFail(() => {
-      const error = new Error('No users found.');
-      error.statusCode = 404;
-      throw error;
+      throw new NotFoundError('No users found.');
     });
     res.send(users);
   } catch (err) {
@@ -17,9 +16,7 @@ module.exports.getUser = async (req, res, next) => {
   try {
     const { userId } = req.params;
     const user = await User.findById(userId).orFail(() => {
-      const error = new Error('No user found with the provided ID.');
-      error.statusCode = 404;
-      throw error;
+      throw new NotFoundError('No user found with the provided ID.');
     });
     res.send(user);
   } catch (err) {
@@ -46,9 +43,7 @@ module.exports.updateUser = async (req, res, next) => {
       { name, about },
       { new: true, runValidators: true },
     ).orFail(() => {
-      const error = new Error('No user found with the provided ID.');
-      error.statusCode = 404;
-      throw error;
+      throw new NotFoundError('No user found with the provided ID.');
     });
     res.send(updatedUser);
   } catch (err) {
@@ -67,7 +62,9 @@ module.exports.updateAvatar = async (req, res, next) => {
         new: true,
         runValidators: true,
       },
-    );
+    ).orFail(() => {
+      throw new NotFoundError('No user found with the provided ID.');
+    });
     res.send(updatedUser);
   } catch (err) {
     next(err);
