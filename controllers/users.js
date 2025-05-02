@@ -36,7 +36,7 @@ module.exports.createUser = async (req, res, next) => {
       email,
       password: hash,
     });
-    res.send(newUser);
+    res.send('User created successfully');
   } catch (err) {
     next(err);
   }
