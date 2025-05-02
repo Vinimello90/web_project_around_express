@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const NotFoundError = require('../utils/errors/NotFoundError');
+const UnauthorizedError = require('../utils/UnauthorizedError');
 
 module.exports.getUsers = async (req, res, next) => {
   try {
@@ -25,18 +26,27 @@ module.exports.getUser = async (req, res, next) => {
   }
 };
 
+module.exports.login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    await User.findOne({ email }).orFail(() => {
+      throw new UnauthorizedError('Email or password is incorrect.');
+    });
+  } catch (err) {}
+};
+
 module.exports.createUser = async (req, res, next) => {
   try {
     const { name, about, avatar, email, password } = req.body;
     const hash = await bcrypt.hash(password, 10);
-    await User.create({
+    const newUser = await User.create({
       name,
       about,
       avatar,
       email,
       password: hash,
     });
-    res.send('User created successfully');
+    res.send(newUser);
   } catch (err) {
     next(err);
   }
