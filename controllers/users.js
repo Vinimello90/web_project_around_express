@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const NotFoundError = require('../utils/errors/NotFoundError');
-const UnauthorizedError = require('../utils/UnauthorizedError');
 
 module.exports.getUsers = async (req, res, next) => {
   try {
