@@ -28,9 +28,13 @@ module.exports.createCard = async (req, res, next) => {
 module.exports.removeCard = async (req, res, next) => {
   try {
     const { cardId } = req.params;
-    await Card.findByIdAndDelete(cardId).orFail(() => {
-      throw new NotFoundError('No card found with the provided ID.');
-    });
+    await Card.findByIdAndDelete(cardId)
+      .orFail(() => {
+        throw new NotFoundError('No card found with the provided ID.');
+      })
+      .then(() => {
+        res.send('Card has been removed');
+      });
   } catch (err) {
     next(err);
   }
