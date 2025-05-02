@@ -29,10 +29,18 @@ module.exports.getUser = async (req, res, next) => {
 module.exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    await User.findOne({ email }).orFail(() => {
+    const user = await User.findOne({ email });
+    if (!user) {
       throw new UnauthorizedError('Email or password is incorrect.');
-    });
-  } catch (err) {}
+    }
+    const matched = bcryptCompare(password, user.password);
+    if (!matched) {
+      throw new UnauthorizedError('Email or password is incorrect.');
+    }
+    res.send({ message: 'Tudo perfeito!' });
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports.createUser = async (req, res, next) => {
