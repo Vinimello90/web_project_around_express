@@ -9,11 +9,10 @@ const { login, createUser } = require('./controllers/auth');
 
 mongoose
   .connect('mongodb://localhost:27017/aroundb')
+  .then(() => console.log('MongoDB connection established'))
   .catch(() => console.error('Failed to connect to MongoDB'));
 
 const db = mongoose.connection;
-
-db.on('open', () => console.log('MongoDB connection established'));
 
 const app = express();
 
@@ -30,6 +29,10 @@ app.use('*', (req, res) => {
 });
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`App listening at port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
+  });
+}
+
+module.exports = app;
