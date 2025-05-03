@@ -6,6 +6,7 @@ const User = require('../models/user');
 const request = supertest(app);
 
 let token;
+let selectedUser;
 
 const user = {
   name: 'Ronaldo',
@@ -22,6 +23,17 @@ const userInvalidUrl = {
   email: 'geraldo4@geraldo.com',
   password: 'ronaldo',
 };
+
+const test = [
+  {
+    _id: 3213,
+    name: 'dasdsa',
+    about: 'sonic',
+    avatar: 'avatar.jpg',
+    email: 'geraldo4@geraldo.com',
+    password: 'asdas',
+  },
+];
 
 const SigninValidUser = {
   email: 'geraldo3@geraldo.com',
@@ -106,13 +118,47 @@ describe('POST "/signin"', () => {
 });
 
 describe('GET "/users"', () => {
-  it('#Success get users data, response with token and status 200', async () => {
+  it('#Success get users data, response with users data and status 200', async () => {
     const response = await request
       .get('/users')
       .set('accept', 'application/json')
       .set('authorization', `Bearer ${token}`);
     const { header, status, body } = response;
+    selectedUser = body[0];
     expect(header['content-type']).toMatch(/json/);
+    expect(body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          _id: expect.any(String),
+          name: expect.any(String),
+          about: expect.any(String),
+          avatar: expect.any(String),
+          email: expect.any(String),
+        }),
+      ]),
+    );
+    expect(status).toBe(200);
+  });
+});
+
+describe('GET "/users/:userId"', () => {
+  it('#Success get user by ID, response with users data and status 200', async () => {
+    const response = await request
+      .get(`/users/${selectedUser._id}`)
+      .set('accept', 'application/json')
+      .set('authorization', `Bearer ${token}`);
+    const { header, status, body } = response;
+    console.log(selectedUser);
+    expect(header['content-type']).toMatch(/json/);
+    expect(body).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        name: expect.any(String),
+        about: expect.any(String),
+        avatar: expect.any(String),
+        email: expect.any(String),
+      }),
+    );
     expect(status).toBe(200);
   });
 });

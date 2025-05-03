@@ -3,9 +3,16 @@ const NotFoundError = require('../utils/errors/NotFoundError');
 
 module.exports.getUsers = async (req, res, next) => {
   try {
-    const users = await User.find().orFail(() => {
+    const response = await User.find().orFail(() => {
       throw new NotFoundError('No users found.');
     });
+    const users = response.map((user) => ({
+      _id: user._id,
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+    }));
     res.send(users);
   } catch (err) {
     next(err);
