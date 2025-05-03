@@ -1,12 +1,11 @@
 const Card = require('../models/card');
 const NotFoundError = require('../utils/errors/NotFoundError');
+const UnauthorizedError = require('../utils/errors/UnauthorizedError');
 
 module.exports.getCards = async (req, res, next) => {
   try {
     const cards = await Card.find().orFail(() => {
-      const error = new Error('No cards found.');
-      error.statusCode = 404;
-      throw error;
+      throw NotFoundError('No cards found.');
     });
     res.send(cards);
   } catch (err) {
@@ -28,13 +27,15 @@ module.exports.createCard = async (req, res, next) => {
 module.exports.removeCard = async (req, res, next) => {
   try {
     const { cardId } = req.params;
-    await Card.findByIdAndDelete(cardId)
-      .orFail(() => {
-        throw new NotFoundError('No card found with the provided ID.');
-      })
-      .then(() => {
-        res.send('Card has been removed');
-      });
+    const { _id: userId } = req.user;
+    const card = await Card.findById(cardId).orFail(() => {
+      throw new NotFoundError('No card found with the provided ID.');
+    });
+    if (card.owner.toString() !== userId) {
+      throw new UnauthorizedError('User not authorized to delete this card.');
+    }
+    await card.deleteOne();
+    res.send('Card has been removed');
   } catch (err) {
     next(err);
   }
