@@ -1,6 +1,6 @@
 const Card = require('../models/card');
+const ForbiddenError = require('../utils/errors/ForbiddenError');
 const NotFoundError = require('../utils/errors/NotFoundError');
-const UnauthorizedError = require('../utils/errors/UnauthorizedError');
 
 module.exports.getCards = async (req, res, next) => {
   try {
@@ -32,7 +32,7 @@ module.exports.removeCard = async (req, res, next) => {
       throw new NotFoundError('No card found with the provided ID.');
     });
     if (card.owner.toString() !== userId) {
-      throw new UnauthorizedError('User not authorized to delete this card.');
+      throw new ForbiddenError('User not authorized to delete this card.');
     }
     await card.deleteOne();
     res.send('Card has been removed');
