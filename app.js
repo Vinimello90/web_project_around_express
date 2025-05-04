@@ -6,19 +6,21 @@ const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const errorHandler = require('./middlewares/errorHandler');
 const { login, createUser } = require('./controllers/auth');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 mongoose
   .connect('mongodb://localhost:27017/aroundb')
   .then(() => console.log('MongoDB connection established'))
   .catch(() => console.error('Failed to connect to MongoDB'));
 
-const db = mongoose.connection;
-
 const app = express();
 
 const { PORT = 3000 } = process.env;
 
 app.use(express.json());
+
+app.use(requestLogger);
+
 app.use('/signin', login);
 app.use('/signup', createUser);
 app.use(auth);
@@ -27,6 +29,9 @@ app.use('/cards', cardsRoutes);
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'The request was not found' });
 });
+
+app.use(errorLogger);
+
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'test') {
