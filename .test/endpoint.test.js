@@ -2,17 +2,11 @@ const supertest = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../app.js');
 const User = require('../models/user');
+const card = require('../models/card.js');
 
 const request = supertest(app);
 
-afterAll(async () => {
-  await User.findOneAndDelete(validUser.email);
-  await User.findOneAndDelete(invalidFieldsUser.email);
-  await mongoose.connection.close();
-});
-
-// USERS ROUTES
-
+// USERS DATA
 let token;
 let selectedUser;
 
@@ -34,6 +28,24 @@ const invalidPassword = {
   email: 'test@test.com',
   password: 'tst1234',
 };
+
+// CARDS DATA
+
+const validCard = {
+  name: 'Test',
+  link: 'https://images.unsplash.com/photo-1721697310377-1a70ae366cb2?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+};
+
+let createdCard;
+
+afterAll(async () => {
+  await card.findByIdAndDelete(createdCard._id);
+  await User.findOneAndDelete(validUser.email);
+  await User.findOneAndDelete(invalidFieldsUser.email);
+  await mongoose.connection.close();
+});
+
+// USERS ROUTES
 
 describe('POST "/signup"', () => {
   it('#Success signup, response with token and status 200', async () => {
@@ -87,19 +99,16 @@ describe('GET "/users"', () => {
       .set('accept', 'application/json')
       .set('authorization', `Bearer ${token}`);
     const { header, status, body } = response;
-    selectedUser = body[0];
     expect(header['content-type']).toMatch(/json/);
-    expect(body).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          _id: expect.any(String),
-          name: expect.any(String),
-          about: expect.any(String),
-          avatar: expect.any(String),
-          email: expect.any(String),
-        }),
-      ]),
-    );
+    body.forEach((card) => {
+      const { _id, name, about, avatar, email } = card;
+      selectedUser = card;
+      expect(typeof _id).toBe('string');
+      expect(typeof name).toBe('string');
+      expect(typeof about).toBe('string');
+      expect(typeof avatar).toBe('string');
+      expect(typeof email).toBe('string');
+    });
     expect(status).toBe(200);
   });
 });
@@ -111,16 +120,13 @@ describe('GET "/users/:userId"', () => {
       .set('accept', 'application/json')
       .set('authorization', `Bearer ${token}`);
     const { header, status, body } = response;
+    const { _id, name, about, avatar, email } = body;
     expect(header['content-type']).toMatch(/json/);
-    expect(body).toEqual(
-      expect.objectContaining({
-        _id: expect.any(String),
-        name: expect.any(String),
-        about: expect.any(String),
-        avatar: expect.any(String),
-        email: expect.any(String),
-      }),
-    );
+    expect(typeof _id).toBe('string');
+    expect(typeof name).toBe('string');
+    expect(typeof about).toBe('string');
+    expect(typeof avatar).toBe('string');
+    expect(typeof email).toBe('string');
     expect(status).toBe(200);
   });
 });
@@ -132,16 +138,13 @@ describe('GET "/users/me"', () => {
       .set('accept', 'application/json')
       .set('authorization', `Bearer ${token}`);
     const { header, status, body } = response;
+    const { _id, name, about, avatar, email } = body;
     expect(header['content-type']).toMatch(/json/);
-    expect(body).toEqual(
-      expect.objectContaining({
-        _id: expect.any(String),
-        name: expect.any(String),
-        about: expect.any(String),
-        avatar: expect.any(String),
-        email: expect.any(String),
-      }),
-    );
+    expect(typeof _id).toBe('string');
+    expect(typeof name).toBe('string');
+    expect(typeof about).toBe('string');
+    expect(typeof avatar).toBe('string');
+    expect(typeof email).toBe('string');
     expect(status).toBe(200);
   });
 });
@@ -158,16 +161,13 @@ describe('PATCH "/users/me"', () => {
       .set('authorization', `Bearer ${token}`)
       .send(updateData);
     const { header, status, body } = response;
+    const { _id, name, about, avatar, email } = body;
     expect(header['content-type']).toMatch(/json/);
-    expect(body).toEqual(
-      expect.objectContaining({
-        _id: expect.any(String),
-        name: expect.any(String),
-        about: expect.any(String),
-        avatar: expect.any(String),
-        email: expect.any(String),
-      }),
-    );
+    expect(typeof _id).toBe('string');
+    expect(typeof name).toBe('string');
+    expect(typeof about).toBe('string');
+    expect(typeof avatar).toBe('string');
+    expect(typeof email).toBe('string');
     expect(status).toBe(200);
   });
 });
@@ -184,18 +184,106 @@ describe('PATCH "/users/me/avatar"', () => {
       .set('authorization', `Bearer ${token}`)
       .send(updateData);
     const { header, status, body } = response;
+    const { _id, name, about, avatar, email } = body;
     expect(header['content-type']).toMatch(/json/);
-    expect(body).toEqual(
-      expect.objectContaining({
-        _id: expect.any(String),
-        name: expect.any(String),
-        about: expect.any(String),
-        avatar: expect.any(String),
-        email: expect.any(String),
-      }),
-    );
+    expect(typeof _id).toBe('string');
+    expect(typeof name).toBe('string');
+    expect(typeof about).toBe('string');
+    expect(typeof avatar).toBe('string');
+    expect(typeof email).toBe('string');
     expect(status).toBe(200);
   });
 });
 
 // CARDS ROUTES
+
+describe('POST "/cards"', () => {
+  it('#Success create a card, response with cards data and status 200', async () => {
+    const response = await request
+      .post('/cards')
+      .set('accept', 'application/json')
+      .set('authorization', `Bearer ${token}`)
+      .send(validCard);
+    const { header, status, body } = response;
+    createdCard = body;
+    const { name, link, owner, likes, _id, createdAt } = body;
+    expect(header['content-type']).toMatch(/json/);
+    expect(typeof name).toEqual('string');
+    expect(typeof link).toEqual('string');
+    expect(typeof owner).toEqual('string');
+    expect(likes).toHaveLength(0);
+    expect(typeof _id).toEqual('string');
+    expect(typeof createdAt).toEqual('string');
+    expect(status).toBe(200);
+  });
+});
+
+describe('GET "/cards"', () => {
+  it('#Success get cards data, response with cards data and status 200', async () => {
+    const response = await request
+      .get('/cards')
+      .set('accept', 'application/json')
+      .set('authorization', `Bearer ${token}`);
+    const { body, header, status } = response;
+    expect(header['content-type']).toMatch(/json/);
+    body.forEach((card) => {
+      const { name, link, owner, likes, _id, createdAt } = card;
+      expect(typeof name).toEqual('string');
+      expect(typeof link).toEqual('string');
+      expect(typeof owner).toEqual('string');
+      expect(likes).toHaveLength(0);
+      expect(typeof _id).toEqual('string');
+      expect(typeof createdAt).toEqual('string');
+    });
+    expect(status).toBe(200);
+  });
+});
+
+describe('PUT "/:cardId"', () => {
+  it('#Success - add user ID to the likes property of selected card, response with card data and status 200', async () => {
+    const response = await request
+      .put(`/cards/${createdCard._id}/likes`)
+      .set('accept', 'application/json')
+      .set('authorization', `Bearer ${token}`);
+    const { header, status, body } = response;
+    const { name, link, owner, likes, _id, createdAt } = body;
+    expect(header['content-type']).toMatch(/json/);
+    expect(typeof name).toEqual('string');
+    expect(typeof link).toEqual('string');
+    expect(typeof owner).toEqual('string');
+    expect(likes).toHaveLength(1);
+    expect(typeof _id).toEqual('string');
+    expect(typeof createdAt).toEqual('string');
+    expect(status).toBe(200);
+  });
+});
+
+describe('DELETE "/:cardId/likes"', () => {
+  it('#Success - remove user ID from likes property of selected card, response with card data and status 200', async () => {
+    const response = await request
+      .delete(`/cards/${createdCard._id}/likes`)
+      .set('accept', 'application/json')
+      .set('authorization', `Bearer ${token}`);
+    const { header, status, body } = response;
+    const { name, link, owner, likes, _id, createdAt } = body;
+    expect(header['content-type']).toMatch(/json/);
+    expect(typeof name).toEqual('string');
+    expect(typeof link).toEqual('string');
+    expect(typeof owner).toEqual('string');
+    expect(likes).toHaveLength(0);
+    expect(typeof _id).toEqual('string');
+    expect(typeof createdAt).toEqual('string');
+    expect(status).toBe(200);
+  });
+});
+
+describe('DELETE "/:cardId"', () => {
+  it('#Success - delete card by ID, response with status 200', async () => {
+    const response = await request
+      .delete(`/cards/${createdCard._id}/likes`)
+      .set('accept', 'application/json')
+      .set('authorization', `Bearer ${token}`);
+    const { status } = response;
+    expect(status).toBe(200);
+  });
+});

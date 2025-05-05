@@ -26,8 +26,8 @@ module.exports.createCard = async (req, res, next) => {
 
 module.exports.removeCard = async (req, res, next) => {
   try {
-    const { cardId } = req.params;
     const { _id: userId } = req.user;
+    const { cardId } = req.params;
     const card = await Card.findById(cardId).orFail(() => {
       throw new NotFoundError('No card found with the provided ID.');
     });
@@ -43,9 +43,10 @@ module.exports.removeCard = async (req, res, next) => {
 
 module.exports.likeCard = async (req, res, next) => {
   try {
+    const { _id: userId } = req.user;
     const updatedCard = await Card.findByIdAndUpdate(
       req.params.cardId,
-      { $addToSet: { likes: req.user._id } },
+      { $addToSet: { likes: userId } },
       { new: true },
     ).orFail(() => {
       throw new NotFoundError('No card found with the provided ID.');
@@ -58,9 +59,10 @@ module.exports.likeCard = async (req, res, next) => {
 
 module.exports.dislikeCard = async (req, res, next) => {
   try {
+    const { _id: userId } = req.user;
     const updatedCard = await Card.findByIdAndUpdate(
       req.params.cardId,
-      { $pull: { likes: req.user._id } },
+      { $pull: { likes: userId } },
       { new: true },
     ).orFail(() => {
       throw new NotFoundError('No card found with the provided ID.');
