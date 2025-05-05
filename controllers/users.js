@@ -62,7 +62,7 @@ module.exports.getUserById = async (req, res, next) => {
 module.exports.getMe = async (req, res, next) => {
   try {
     const { _id } = req.user;
-    const authenticatedUser = await User.findById({ _id }).orFail(() => {
+    const authenticatedUser = await User.findById(_id).orFail(() => {
       throw new NotFoundError('No user found with the provided ID.');
     });
     res.send(authenticatedUser);

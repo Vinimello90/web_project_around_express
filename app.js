@@ -7,6 +7,7 @@ const cardsRoutes = require('./routes/cards');
 const errorHandler = require('./middlewares/errorHandler');
 const { login, createUser } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { celebrate, Joi, errors } = require('celebrate');
 
 mongoose
   .connect('mongodb://localhost:27017/aroundb')
@@ -21,8 +22,26 @@ app.use(express.json());
 
 app.use(requestLogger);
 
-app.use('/signin', login);
-app.use('/signup', createUser);
+app.use(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+    }),
+  }),
+  login,
+);
+app.use(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
+    }),
+  }),
+  createUser,
+);
 
 app.use(auth);
 
@@ -33,6 +52,8 @@ app.use('*', (req, res) => {
 });
 
 app.use(errorLogger);
+
+app.use(errors());
 
 app.use(errorHandler);
 
