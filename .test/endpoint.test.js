@@ -48,20 +48,20 @@ afterAll(async () => {
 // USERS ROUTES
 
 describe('POST "/signup"', () => {
-  it('#Success signup, response with token and status 200', async () => {
+  it('#Success - should create a new user and respond with token and status 200', async () => {
     const response = await request.post('/signup').send(validUser).set('Accept', 'application/json');
     const { body, header, status } = response;
     const newUser = body;
     expect(header['content-type']).toMatch(/json/);
     expect(status).toBe(200);
   });
-  it('#User already exists, response with error message and status 400 ', async () => {
+  it('#Error - should return 400 when user already exists', async () => {
     const response = await request.post('/signup').send(validUser).set('Accept', 'application/json');
     const { status, body } = response;
     expect(body.message).toBe('The provided key already exists.');
     expect(status).toBe(400);
   });
-  it('#Invalid fields, response with error message and status 400', async () => {
+  it('#Error - should return 400 when email and password fields are invalid', async () => {
     const response = await request.post('/signup').send(invalidFieldsUser).set('Accept', 'application/json');
     const { status, body } = response;
     expect(typeof body.message).toBe('string');
@@ -70,7 +70,7 @@ describe('POST "/signup"', () => {
 });
 
 describe('POST "/signin"', () => {
-  it('#Success signin, response with token and status 200', async () => {
+  it('#Success - should sign in the user and return token with status 200', async () => {
     const response = await request.post('/signin').send(validUser).set('Accept', 'application/json');
     const { body, header, status } = response;
     token = body.token;
@@ -78,13 +78,13 @@ describe('POST "/signin"', () => {
     expect(header['content-type']).toMatch(/json/);
     expect(status).toBe(200);
   });
-  it('#Invalid e-mail, response status 401 and error message', async () => {
+  it('#Error - should return 401 when email is incorrect', async () => {
     const response = await request.post('/signin').send(invalidEmail).set('Accept', 'application/json');
     const { status } = response;
     expect(status).toBe(401);
     expect(response.body.message).toBe('Email or password is incorrect.');
   });
-  it('#Invalid password, response status 401 and error message', async () => {
+  it('#Error - should return 401 when password is incorrect', async () => {
     const response = await request.post('/signin').send(invalidPassword).set('Accept', 'application/json');
     const { status } = response;
     expect(status).toBe(401);
@@ -93,7 +93,7 @@ describe('POST "/signin"', () => {
 });
 
 describe('GET "/users"', () => {
-  it('#Success get users data, response with users data and status 200', async () => {
+  it('#Success - should return list of users with status 200', async () => {
     const response = await request
       .get('/users')
       .set('accept', 'application/json')
@@ -114,7 +114,7 @@ describe('GET "/users"', () => {
 });
 
 describe('GET "/users/:userId"', () => {
-  it('#Success get user by ID, response with users data and status 200', async () => {
+  it('#Success - should return user data by ID with status 200', async () => {
     const response = await request
       .get(`/users/${selectedUser._id}`)
       .set('accept', 'application/json')
@@ -132,7 +132,7 @@ describe('GET "/users/:userId"', () => {
 });
 
 describe('GET "/users/me"', () => {
-  it('#Success get authenticated user, response with users data and status 200', async () => {
+  it('#Success - should return current authenticated user data with status 200', async () => {
     const response = await request
       .get('/users/me')
       .set('accept', 'application/json')
@@ -154,7 +154,7 @@ describe('PATCH "/users/me"', () => {
     name: 'John',
     about: 'Dev',
   };
-  it('#Success update name and about fields of authenticated user, response with users data and status 200', async () => {
+  it('#Success - should update name and about fields of authenticated user with status 200', async () => {
     const response = await request
       .patch('/users/me')
       .set('accept', 'application/json')
@@ -177,7 +177,7 @@ describe('PATCH "/users/me/avatar"', () => {
     avatar:
       'https://images.unsplash.com/photo-1721697310377-1a70ae366cb2?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   };
-  it('#Success update name and about fields of authenticated user, response with users data and status 200', async () => {
+  it('#Success - should update avatar field of authenticated user with status 200', async () => {
     const response = await request
       .patch('/users/me/avatar')
       .set('accept', 'application/json')
@@ -198,7 +198,7 @@ describe('PATCH "/users/me/avatar"', () => {
 // CARDS ROUTES
 
 describe('POST "/cards"', () => {
-  it('#Success create a card, response with cards data and status 200', async () => {
+  it('#Success - should create a new card and return card data with status 200', async () => {
     const response = await request
       .post('/cards')
       .set('accept', 'application/json')
@@ -219,7 +219,7 @@ describe('POST "/cards"', () => {
 });
 
 describe('GET "/cards"', () => {
-  it('#Success get cards data, response with cards data and status 200', async () => {
+  it('#Success - should return cards list with status 200', async () => {
     const response = await request
       .get('/cards')
       .set('accept', 'application/json')
@@ -240,7 +240,7 @@ describe('GET "/cards"', () => {
 });
 
 describe('PUT "/:cardId"', () => {
-  it('#Success - add user ID to the likes property of selected card, response with card data and status 200', async () => {
+  it('#Success - should add user ID to the "likes" array property of the card and return updated card with status 200', async () => {
     const response = await request
       .put(`/cards/${createdCard._id}/likes`)
       .set('accept', 'application/json')
@@ -259,7 +259,7 @@ describe('PUT "/:cardId"', () => {
 });
 
 describe('DELETE "/:cardId/likes"', () => {
-  it('#Success - remove user ID from likes property of selected card, response with card data and status 200', async () => {
+  it('#Success - should remove user ID from "likes" array property of the card and return updated card with status 200', async () => {
     const response = await request
       .delete(`/cards/${createdCard._id}/likes`)
       .set('accept', 'application/json')
@@ -278,7 +278,7 @@ describe('DELETE "/:cardId/likes"', () => {
 });
 
 describe('DELETE "/:cardId"', () => {
-  it('#Success - delete card by ID, response with status 200', async () => {
+  it('#Success - should delete card by ID and return status 200', async () => {
     const response = await request
       .delete(`/cards/${createdCard._id}/likes`)
       .set('accept', 'application/json')
