@@ -5,7 +5,7 @@ const auth = require('./middlewares/auth');
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const errorHandler = require('./middlewares/errorHandler');
-const { login, createUser } = require('./controllers/auth');
+const { login, createUser } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 mongoose
@@ -23,7 +23,9 @@ app.use(requestLogger);
 
 app.use('/signin', login);
 app.use('/signup', createUser);
+
 app.use(auth);
+
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 app.use('*', (req, res) => {
