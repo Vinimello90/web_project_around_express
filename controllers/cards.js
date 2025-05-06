@@ -4,9 +4,7 @@ const NotFoundError = require('../utils/errors/NotFoundError');
 
 module.exports.getCards = async (req, res, next) => {
   try {
-    const cards = await Card.find().orFail(() => {
-      throw NotFoundError('No cards found.');
-    });
+    const cards = await Card.find();
     res.send(cards);
   } catch (err) {
     next(err);
@@ -35,7 +33,7 @@ module.exports.removeCard = async (req, res, next) => {
       throw new ForbiddenError('User not authorized to delete this card.');
     }
     await card.deleteOne();
-    res.send('Card has been removed');
+    res.status(200).send({ message: 'Card has been removed' });
   } catch (err) {
     next(err);
   }

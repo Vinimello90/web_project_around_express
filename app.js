@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
+var cors = require('cors');
 const auth = require('./middlewares/auth');
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
@@ -21,6 +22,9 @@ const { PORT = 3000 } = process.env;
 app.use(express.json());
 
 app.use(requestLogger);
+
+app.use(cors());
+app.options('*', cors());
 
 app.use(
   '/signin',
