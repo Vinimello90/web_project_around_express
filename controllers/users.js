@@ -12,7 +12,7 @@ module.exports.login = async (req, res, next) => {
     const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', {
       expiresIn: '7d',
     });
-    res.send({ token });
+    res.status(200).send({ token });
   } catch (err) {
     next(err);
   }
@@ -26,7 +26,7 @@ module.exports.createUser = async (req, res, next) => {
       email,
       password: hash,
     });
-    res.send(newUser);
+    res.status(201).send(newUser);
   } catch (err) {
     next(err);
   }
@@ -37,7 +37,7 @@ module.exports.getUsers = async (req, res, next) => {
     const users = await User.find().orFail(() => {
       throw new NotFoundError('No users found.');
     });
-    res.send(users);
+    res.status(200).send(users);
   } catch (err) {
     next(err);
   }
@@ -49,7 +49,7 @@ module.exports.getUserById = async (req, res, next) => {
     const user = await User.findById(userId).orFail(() => {
       throw new NotFoundError('No user found with the provided ID.');
     });
-    res.send(user);
+    res.status(200).send(user);
   } catch (err) {
     next(err);
   }
@@ -61,7 +61,7 @@ module.exports.getMe = async (req, res, next) => {
     const authenticatedUser = await User.findById(_id).orFail(() => {
       throw new NotFoundError('No user found with the provided ID.');
     });
-    res.send(authenticatedUser);
+    res.status(200).send(authenticatedUser);
   } catch (err) {
     next(err);
   }
@@ -78,7 +78,7 @@ module.exports.updateUser = async (req, res, next) => {
     ).orFail(() => {
       throw new NotFoundError('No user found with the provided ID.');
     });
-    res.send(updatedUser);
+    res.status(200).send(updatedUser);
   } catch (err) {
     next(err);
   }
@@ -98,7 +98,7 @@ module.exports.updateAvatar = async (req, res, next) => {
     ).orFail(() => {
       throw new NotFoundError('No user found with the provided ID.');
     });
-    res.send(updatedUser);
+    res.status(200).send(updatedUser);
   } catch (err) {
     next(err);
   }

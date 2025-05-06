@@ -16,7 +16,7 @@ module.exports.createCard = async (req, res, next) => {
     const { name, link } = req.body;
     const { _id: userId } = req.user;
     const newCard = await Card.create({ name, link, owner: userId });
-    res.send(newCard);
+    res.status(201).send(newCard);
   } catch (err) {
     next(err);
   }
@@ -49,7 +49,7 @@ module.exports.likeCard = async (req, res, next) => {
     ).orFail(() => {
       throw new NotFoundError('No card found with the provided ID.');
     });
-    res.send(updatedCard);
+    res.status(200).send(updatedCard);
   } catch (err) {
     next(err);
   }
@@ -65,7 +65,7 @@ module.exports.dislikeCard = async (req, res, next) => {
     ).orFail(() => {
       throw new NotFoundError('No card found with the provided ID.');
     });
-    res.send(updatedCard);
+    res.status(200).send(updatedCard);
   } catch (err) {
     next(err);
   }
