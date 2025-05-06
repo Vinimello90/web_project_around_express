@@ -53,7 +53,7 @@ describe('POST "/signup"', () => {
     const { body, header, status } = response;
     const newUser = body;
     expect(header['content-type']).toMatch(/json/);
-    expect(status).toBe(200);
+    expect(status).toBe(201);
   });
   it('#Error - should return 400 when user already exists', async () => {
     const response = await request.post('/signup').send(validUser).set('Accept', 'application/json');
@@ -214,7 +214,7 @@ describe('POST "/cards"', () => {
     expect(likes).toHaveLength(0);
     expect(typeof _id).toEqual('string');
     expect(typeof createdAt).toEqual('string');
-    expect(status).toBe(200);
+    expect(status).toBe(201);
   });
 });
 
