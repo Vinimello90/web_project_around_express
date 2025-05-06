@@ -2,7 +2,13 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const validateURL = require('../utils/validators/validateURL');
 
-const { getUsers, getUserById, getMe, updateUser, updateAvatar } = require('../controllers/users');
+const {
+  getUsers,
+  getUserById,
+  getMe,
+  updateUser,
+  updateAvatar,
+} = require('../controllers/users');
 
 router.get('/', getUsers);
 router.get('/me', getMe);

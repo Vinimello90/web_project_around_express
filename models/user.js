@@ -19,14 +19,10 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     validate: {
-      validator: (url) =>
-        /^(https?:\/\/|w{3}\.)([\w-]+\.)+([\w]{2,})(\/[\w._~:/?%#[\]@!$&'()*+,;=-]*)?$/.test(
-          url,
-        ),
+      validator: (url) => /^(https?:\/\/|w{3}\.)([\w-]+\.)+([\w]{2,})(\/[\w._~:/?%#[\]@!$&'()*+,;=-]*)?$/.test(url),
       message: '`link` value is not a valid URL',
     },
-    default:
-      'https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg',
+    default: 'https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg',
   },
   email: {
     type: String,
@@ -44,10 +40,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = async function findUserByCredencials(
-  email,
-  password,
-) {
+userSchema.statics.findUserByCredentials = async function findUserByCredencials(email, password) {
   const user = await this.findOne({ email }).select('+password');
   if (!user) {
     throw new UnauthorizedError('Email or password is incorrect.');

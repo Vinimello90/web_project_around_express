@@ -1,6 +1,12 @@
 const router = require('express').Router();
-const { getCards, createCard, removeCard, likeCard, dislikeCard } = require('../controllers/cards');
 const { celebrate, Joi } = require('celebrate');
+const {
+  getCards,
+  createCard,
+  removeCard,
+  likeCard,
+  dislikeCard,
+} = require('../controllers/cards');
 const validateURL = require('../utils/validators/validateURL');
 
 router.get('/', getCards);

@@ -48,18 +48,18 @@ afterAll(async () => {
 // USERS ROUTES
 
 describe('POST "/signup"', () => {
-  it('#Success - should create a new user and respond with token and status 200', async () => {
+  it('#Success - should create a new user and respond with token and status 201', async () => {
     const response = await request.post('/signup').send(validUser).set('Accept', 'application/json');
     const { body, header, status } = response;
     const newUser = body;
     expect(header['content-type']).toMatch(/json/);
     expect(status).toBe(201);
   });
-  it('#Error - should return 400 when user already exists', async () => {
+  it('#Error - should return 409 when user already exists', async () => {
     const response = await request.post('/signup').send(validUser).set('Accept', 'application/json');
     const { status, body } = response;
     expect(body.message).toBe('The provided key already exists.');
-    expect(status).toBe(400);
+    expect(status).toBe(409);
   });
   it('#Error - should return 400 when email and password fields are invalid', async () => {
     const response = await request.post('/signup').send(invalidFieldsUser).set('Accept', 'application/json');
@@ -198,7 +198,7 @@ describe('PATCH "/users/me/avatar"', () => {
 // CARDS ROUTES
 
 describe('POST "/cards"', () => {
-  it('#Success - should create a new card and return card data with status 200', async () => {
+  it('#Success - should create a new card and return card data with status 201', async () => {
     const response = await request
       .post('/cards')
       .set('accept', 'application/json')
