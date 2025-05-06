@@ -1,4 +1,5 @@
 const BAD_REQUEST = 400;
+const CONFLICT_ERROR = 409;
 const INTERNAL_SERVER_ERROR = 500;
 const DUPLICATED_KEY = 11000;
 
@@ -16,7 +17,7 @@ module.exports = (err, req, res, next) => {
   }
 
   if (err.code === DUPLICATED_KEY) {
-    res.status(BAD_REQUEST).send({ message: 'The provided key already exists.' });
+    res.status(CONFLICT_ERROR).send({ message: 'The provided key already exists.' });
     return;
   }
 
