@@ -16,13 +16,11 @@ module.exports = (err, req, res, next) => {
   }
 
   if (err.code === DUPLICATED_KEY) {
-    res
-      .status(BAD_REQUEST)
-      .send({ message: 'The provided key already exists.' });
+    res.status(BAD_REQUEST).send({ message: 'The provided key already exists.' });
+    return;
   }
 
   res.status(statusCode).send({
-    message:
-      statusCode !== INTERNAL_SERVER_ERROR ? message : 'Internal Server Error.',
+    message: statusCode !== INTERNAL_SERVER_ERROR ? message : 'Internal Server Error.',
   });
 };

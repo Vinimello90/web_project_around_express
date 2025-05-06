@@ -5,7 +5,7 @@ const NotFoundError = require('../utils/errors/NotFoundError');
 module.exports.getCards = async (req, res, next) => {
   try {
     const cards = await Card.find();
-    res.send(cards);
+    res.send(cards.reverse());
   } catch (err) {
     next(err);
   }
