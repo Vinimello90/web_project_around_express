@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -10,14 +11,16 @@ const errorHandler = require('./middlewares/errorHandler');
 const { login, createUser } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
+const { API_PORT, DATABASE_URL } = process.env;
+
 mongoose
-  .connect('mongodb://localhost:27017/aroundb')
+  .connect(DATABASE_URL)
   .then(() => console.log('MongoDB connection established'))
   .catch(() => console.error('Failed to connect to MongoDB'));
 
 const app = express();
 
-const { PORT = 3000 } = process.env;
+const { PORT = API_PORT } = process.env;
 
 app.use(express.json());
 
