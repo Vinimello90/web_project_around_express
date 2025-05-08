@@ -15,7 +15,6 @@ Este é um projeto de API **RESTful** desenvolvido com **Node.js**, **Express.js
 - Joi / Celebrate
 - PM2
 - Nginx
-- Testes automatizados
 
 ## Descrição das Tecnologias e Técnicas Utilizadas
 
