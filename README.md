@@ -8,6 +8,14 @@ Este é um projeto de API **RESTful** desenvolvido com **Node.js**, **Express.js
 - Express.js
 - MongoDB
 - Mongoose
+- Bcryptjs
+- Jsonwebtoken
+- Cors
+- Winston
+- Joi / Celebrate
+- PM2
+- Nginx
+- Testes automatizados
 
 ## Descrição das Tecnologias e Técnicas Utilizadas
 
@@ -31,15 +39,89 @@ Também foi implementado um middleware global para tratar erros nas rotas, utili
 
 Os métodos `find()`, `findById()`, `findByIdAndUpdate()` e `findByIdAndRemove()` são usados para realizar as operações **CRUD** (Create, Read, Update, Delete) e manipular os dados no banco.
 
+## Bcryptjs
+
+Uso a biblioteca **bcryptjs** para transformar senhas em **hashes** antes de armazená-las no banco de dados. Para isso, utilizo a função `bcrypt.hash()`, passando a senha e um número que define o tamanho do **salt** que será adicionado antes da encriptação. O resultado é um **hash** seguro. Para validar uma senha, utilizo a função `bcrypt.compare()`, onde comparo a senha fornecida com a **hash** armazenada.
+
+## Jsonwebtoken
+
+Utilizo a biblioteca **jsonwebtoken** para gerar tokens de autenticação, que permitem identificar o usuário e mantê-lo conectado mesmo após fechar e reabrir a página. Para criar o token, uso a função `jwt.sign()`, que gera uma **hash** contendo informações como o ID do usuário e um prazo de expiração para o token, ficando o token inválido após o expirar sendo necessário um novo login. Para validar o token, uso `jwt.verify()`, que retorna o **payload** com os dados armazenados, como a ID do usuário, se o token for válido.
+
+### Cors
+
+O **CORS (Cross-Origin Resource Sharing)** é um mecanismo de segurança que define quais origens podem acessar recursos no servidor. Para facilitar sua implementação no **Node.js**, utilizo a biblioteca **cors**, que funciona como um middleware e simplifica a configuração do CORS em aplicações web.
+
+### Winston
+
+Utilizo a biblioteca **winston** para registrar logs da aplicação. Em conjunto com o middleware **express-winston**, consigo registrar automaticamente todas as requisições e erros. Para isso, aplico `app.use(requestLogger)` nas requisições e `app.use(errorLogger)` nos erros.
+
+### Joi / Celebrate
+
+Uso o **Joi** para definir e validar esquemas de dados. Já o **Celebrate** é um middleware do **Express** que aplica essas validações automaticamente nas requisições HTTP. Com os dois juntos, consigo garantir entradas seguras e bem estruturadas nas minhas APIs.
+
+### PM2
+
+Utilizo o **PM2** como gerenciador de processos para aplicações **Node.js**. Ele mantém minha API sempre ativa e, caso ocorra alguma falha ou reinicialização do servidor, o **PM2** religa automaticamente a aplicação.
+
+### Nginx
+
+Emprego o **Nginx** como servidor web e proxy reverso. Com ele, consigo redirecionar subdomínios para diferentes destinos — como uma API ou a página web do aplicativo. Também configuro o **CSP (Content Security Policy)** diretamente nos headers das respostas do servidor, reforçando a segurança da aplicação.
+
 ## Documentação
 
-Após instalar as dependências com **npm i**, inicie o servidor usando o comando **npm run start**.
+Após instalar as dependências com **npm i** e configurar o endereço do **mongodb** e a porta da **API**, inicie o servidor usando o comando **npm run start**.
 
 ## Endpoints
+
+### POST /signin
+
+Envia os dados enviados para autenticação, se os dados forem válidos é retornado um token de autorização.
+
+- **email**: mínimo de 2 caracteres.
+
+- **password**: mínimo de 8 caracteres.
+
+Exemplo:
+
+JSON
+
+```json
+{
+  "email": "exemplo@exemplo.com",
+  "about": "12345678"
+}
+```
+
+### POST /signup
+
+Cria um novo usuário com os dados enviados em JSON e retorna as informações do usuário criado.
+
+- **email**: mínimo de 2 caracteres.
+
+- **password**: mínimo de 8 caracteres.
+
+Exemplo:
+
+JSON
+
+```json
+{
+  "email": "exemplo@exemplo.com",
+  "about": "12345678"
+}
+```
+
+Endereço (URL)
+
+```bash
+http://localhost:3000/signup
+```
 
 ### GET /users
 
 Retorna todos os dados dos usuários em formato JSON.
+
+\* É necessário enviar o token no headers para autorização.
 
 Exemplo:
 
@@ -51,45 +133,33 @@ http://localhost:3000/users
 
 Retorna os dados de um usuário específico com base no **ID**, em formato JSON.
 
+\* É necessário enviar o token no headers para autorização.
+
 Exemplo:
 
 ```bash
-http://localhost:3000/cards/12345
+http://localhost:3000/users/12345
 ```
 
 Substitua **12345** pelo **ID** do usuário desejado.
 
-### POST /users
+### GET /users/me
 
-Cria um novo usuário com os dados enviados em JSON e retorna as informações do usuário criado.
+Retorna os dados de um usuário específico com base no **ID** do usuário autorizado, em formato JSON.
 
-- **name**: mínimo de 2 caracteres, máximo de 30.
-
-- **about**: mínimo de 2 caracteres, máximo de 30.
-
-- **avatar**: URL válida.
+\* É necessário enviar o token no headers para autorização.
 
 Exemplo:
 
-JSON
-
-```json
-{
-  "name": "Tim Berners-Lee",
-  "about": "Inventor, scientist",
-  "avatar": "https://media.wired.com/photos/5c86f3dd67bf5c2d3c382474/4:3/w_2400,h_1800,c_limit/TBL-RTX6HE9J-(1).jpg"
-}
-```
-
-Endereço (URL)
-
 ```bash
-http://localhost:3000/users
+http://localhost:3000/users/me
 ```
 
 ### PATCH /users/me
 
 Atualiza os dados do usuário atual, alterando as propriedades name e about com os dados enviados em JSON, e retorna com as informações atualizadas.
+
+\* É necessário enviar o token no headers para autorização.
 
 - **name**: mínimo de 2 caracteres, máximo de 30.
 
@@ -116,6 +186,8 @@ http://localhost:3000/users/me
 
 Atualiza o avatar do usuário atual com uma **URL** válida enviada em JSON e retorna os dados atualizados.
 
+\* É necessário enviar o token no headers para autorização.
+
 **Exemplo:**
 
 JSON
@@ -136,6 +208,8 @@ http://localhost:3000/users/me/avatar
 
 Retorna todos os dados dos cartões em formato JSON.
 
+\* É necessário enviar o token no headers para autorização.
+
 Exemplo:
 
 ```bash
@@ -145,6 +219,8 @@ http://localhost:3000/cards
 ### POST /cards
 
 Cria um novo cartão com os dados enviados em JSON e retorna as informações do cartão criado.
+
+\* É necessário enviar o token no headers para autorização.
 
 - **name**: mínimo de 2 caracteres, máximo de 30.
 
@@ -169,7 +245,9 @@ http://localhost:3000/cards
 
 ### DELETE /cards/:cardId
 
-Remove um cartão específico com base no ID do cartão.
+Remove um cartão específico com base no **ID** do cartão se o **ID** do usuário autorizado for o mesmo do proprietário do cartão.
+
+\* É necessário enviar o token no headers para autorização.
 
 **Exemplo**
 
@@ -183,7 +261,9 @@ Substitua **12345** pelo **ID** do card desejado.
 
 ### PUT /cards/:cardId/likes
 
-Adiciona o **ID** do usuário atual ao array de likes do cartão, com base no **ID** do cartão.
+Adiciona o **ID** do usuário autorizado ao array de likes do cartão, com base no **ID** do cartão.
+
+\* É necessário enviar o token no headers para autorização.
 
 **Exemplo**
 
@@ -197,7 +277,9 @@ Substitua **12345** pelo **ID** do card desejado.
 
 ### DELETE /cards/:cardId/likes
 
-Remove o ID do usuário atual do array de likes do cartão, com base no **ID** do cartão.
+Remove o ID do usuário autorizado do array de likes do cartão, com base no **ID** do cartão.
+
+\* É necessário enviar o token no headers para autorização.
 
 **Exemplo**
 
