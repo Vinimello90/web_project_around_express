@@ -38,11 +38,11 @@ Também foi implementado um middleware global para tratar erros nas rotas, utili
 
 Os métodos `find()`, `findById()`, `findByIdAndUpdate()` e `findByIdAndRemove()` são usados para realizar as operações **CRUD** (Create, Read, Update, Delete) e manipular os dados no banco.
 
-## Bcryptjs
+### Bcryptjs
 
 Uso a biblioteca **bcryptjs** para transformar senhas em **hashes** antes de armazená-las no banco de dados. Para isso, utilizo a função `bcrypt.hash()`, passando a senha e um número que define o tamanho do **salt** que será adicionado antes da encriptação. O resultado é um **hash** seguro. Para validar uma senha, utilizo a função `bcrypt.compare()`, onde comparo a senha fornecida com a **hash** armazenada.
 
-## Jsonwebtoken
+### Jsonwebtoken
 
 Utilizo a biblioteca **jsonwebtoken** para gerar tokens de autenticação, que permitem identificar o usuário e mantê-lo conectado mesmo após fechar e reabrir a página. Para criar o token, uso a função `jwt.sign()`, que gera uma **hash** contendo informações como o ID do usuário e um prazo de expiração para o token, ficando o token inválido após o expirar sendo necessário um novo login. Para validar o token, uso `jwt.verify()`, que retorna o **payload** com os dados armazenados, como a ID do usuário, se o token for válido.
 
