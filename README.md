@@ -1,6 +1,6 @@
 # Around the U.S. - EUA Afora API RESTful
 
-Este é um projeto de API **RESTful** desenvolvido com **Node.js**, **Express.js**, **MongoDB** e **Mongoose**. A API recebe dados, os salva em um banco de dados e fornece informações sobre usuários e cartões para consumo na plataforma do projeto **[Around the U.S. - EUA Afora](https://github.com/Vinimello90/web_project_around_react#readme)**.
+Este é um projeto de API **RESTful** desenvolvido com **Node.js**, **Express.js**, **MongoDB** e **Mongoose**. A API recebe dados, os salva em um banco de dados e fornece informações sobre usuários e cartões para consumo na plataforma do projeto **[Around the U.S. - EUA Afora](https://github.com/Vinimello90/web_project_around_auth#readme)**.
 
 ## Tecnologias
 
